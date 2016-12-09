@@ -17,7 +17,7 @@ from django.utils.encoding import force_unicode, smart_str, filepath_to_uri
 
 try:
     from boto import __version__ as boto_version
-    from boto.s3.connection import S3Connection, SubdomainCallingFormat
+    from boto.s3.connection import S1Connection, SubdomainCallingFormat
     from boto.exception import S3ResponseError
     from boto.s3.key import Key as S3Key
     from boto.utils import parse_ts
@@ -220,6 +220,7 @@ class S3BotoStorage(Storage):
     file_overwrite = setting('AWS_S3_FILE_OVERWRITE', True)
     headers = setting('AWS_HEADERS', {})
     bucket_name = setting('AWS_STORAGE_BUCKET_NAME')
+    bucket_region = setting('AWS_S3_REGION')
     auto_create_bucket = setting('AWS_AUTO_CREATE_BUCKET', False)
     default_acl = setting('AWS_DEFAULT_ACL', 'public-read')
     bucket_acl = setting('AWS_BUCKET_ACL', default_acl)
@@ -277,6 +278,15 @@ class S3BotoStorage(Storage):
 
     @property
     def connection(self):
+        if self.bucket_region:
+           self._connection = boto.s3.connect_to_region(
+                self.bucket_region,
+                aws_access_key_id = self.access_key,
+                aws_secret_access_key = self.secret_key,
+                is_secure = self.use_ssl,
+                calling_format = self.calling_format
+           )
+            
         if self._connection is None:
             self._connection = self.connection_class(
                 self.access_key,
