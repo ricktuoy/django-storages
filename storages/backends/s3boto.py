@@ -15,7 +15,8 @@ from django.utils.encoding import force_unicode, smart_str
 
 try:
     from boto import __version__ as boto_version
-    from boto.s3.connection import S1Connection, SubdomainCallingFormat, connect_to_region
+    from boto.s3.connection import S1Connection
+    from boto.s3 import connect_to_region
     from boto.exception import S3ResponseError
     from boto.s3.key import Key as S3Key
     from boto.utils import parse_ts
