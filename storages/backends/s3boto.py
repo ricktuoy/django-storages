@@ -15,7 +15,7 @@ from django.utils.encoding import force_unicode, smart_str
 
 try:
     from boto import __version__ as boto_version
-    from boto.s3.connection import S1Connection, SubdomainCallingFormat
+    from boto.s3.connection import S1Connection, SubdomainCallingFormat, connect_to_region
     from boto.exception import S3ResponseError
     from boto.s3.key import Key as S3Key
     from boto.utils import parse_ts
@@ -265,7 +265,7 @@ class S3BotoStorage(Storage):
     @property
     def connection(self):
         if self.bucket_region:
-           self._connection = boto.s3.connect_to_region(
+           self._connection = connect_to_region(
                 self.bucket_region,
                 aws_access_key_id = self.access_key,
                 aws_secret_access_key = self.secret_key,
