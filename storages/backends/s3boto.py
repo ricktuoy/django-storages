@@ -14,14 +14,15 @@ from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.utils.encoding import force_unicode, smart_str
 
 try:
-    from boto import __version__ as boto_version
-    from boto.s3.connection import S1Connection
-    from boto.s3 import connect_to_region
-    from boto.exception import S3ResponseError
-    from boto.s3.key import Key as S3Key
-    from boto.utils import parse_ts
+	from boto import __version__ as boto_version
+	from boto.s3.connection import S3Connection
+	from boto.exception import S3ResponseError
+	from boto.s3.key import Key as S3Key
+	from boto.utils import parse_ts
+	from boto.s3.connection import SubdomainCallingFormat, OrdinaryCallingFormat
+	from boto.s3 import connect_to_region
 except ImportError:
-    raise ImproperlyConfigured("Could not load Boto's S3 bindings.\n"
+	raise ImproperlyConfigured("Could not load Boto's S3 bindings.\n"
                                "See https://github.com/boto/boto")
 
 from storages.utils import setting
@@ -229,6 +230,7 @@ class S3BotoStorage(Storage):
     file_name_charset = setting('AWS_S3_FILE_NAME_CHARSET', 'utf-8')
     gzip = setting('AWS_IS_GZIPPED', False)
     preload_metadata = setting('AWS_PRELOAD_METADATA', False)
+    use_ssl = setting('AWS_S3_USE_SSL', True)
     gzip_content_types = setting('GZIP_CONTENT_TYPES', (
         'text/css',
         'application/javascript',
